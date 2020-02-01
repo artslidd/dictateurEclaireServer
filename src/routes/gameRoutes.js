@@ -43,4 +43,14 @@ router.post('/join', async (req, res) => {
     }
 });
 
+router.post('/remove', async (req, res) => {
+    const { code } = req.body;
+
+    await Game.findOneAndRemove(
+        { code }
+    );
+
+    res.send("Done");
+})
+
 module.exports = router;
