@@ -2,6 +2,9 @@
   "name": "dictateurEclaire-server",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/routes/index.js"
+  },
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^3.0.7",
