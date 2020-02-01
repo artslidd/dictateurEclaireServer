@@ -4,15 +4,25 @@ const router = express.Router();
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const Game = mongoose.model('Game');
-const requireAuth = require('../middlewares/requireAuth');
 
-// router.use(requireAuth);
+
+router.get('/getMixes', async (req, res) => {
+    const { code } = req.headers;
+    // Finding the mix 
+    game = await Game.findOne({
+        code
+    });
+    if (game.players.some(nonLegit)) {
+        res.send({ message: "Wait for other players", game });
+    }
+    res.send({ message: "Ready", game });
+});
 
 router.post('/sendMix', async (req, res) => {
     const { code, name } = req.headers;
     const { water, wind, sun, gas, nuclear } = req.body;
 
-    if (!water || !wind || !sun || !gas || !nuclear) {
+    if (typeof (water) == undefined || typeof (wind) == undefined || typeof (sun) == undefined || typeof (gas) == undefined || typeof (nuclear) == undefined) {
         return res
             .status(422)
             .send({ error: "Send the whole mix please" })
@@ -36,11 +46,23 @@ router.post('/sendMix', async (req, res) => {
             }
         },
         (err, doc) => {
-            res.send({ err: "Error when modifying mix" })
+            if (err) {
+                res.send({ err: "Erreur pendant l'envoi du mix" })
+            }
         }
     );
     return res.send("ok");
 });
+
+
+const nonLegit = ({ mix }) => {
+    const { water, wind, sun, gas, nuclear } = mix;
+    if (!water && !wind && !sun && !gas && !nuclear) {
+        return true
+    }
+    return false
+}
+
 
 const nameToId = (name) => {
     switch (name) {

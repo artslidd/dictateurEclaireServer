@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const gameRoutes = require('./gameRoutes');
 const mixRoutes = require('./mixRoutes');
-const requireAuth = require('../middlewares/requireAuth');
 
 const app = express();
 app.use(bodyParser.json());
@@ -25,11 +24,6 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('error', () => {
     console.log("Can't connect to mongo instance");
 })
-
-
-app.get('/', requireAuth, (req, res) => {
-    res.send(`Your email: ${req.user.email}`);
-});
 
 app.listen(3000, () => {
     console.log('Listening on port 3000');
