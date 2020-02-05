@@ -34,6 +34,10 @@ const gameSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
+    launched: {
+        type: Boolean,
+        default: false
+    },
     players: {
         type: Array,
         items: playerSchema,

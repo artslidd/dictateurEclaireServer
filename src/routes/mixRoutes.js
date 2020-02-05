@@ -6,21 +6,52 @@ mongoose.set('useFindAndModify', false);
 const Game = mongoose.model('Game');
 
 
-router.get('/getMixes', async (req, res) => {
-    const { code } = req.headers;
-    // Finding the mix 
-    game = await Game.findOne({
-        code
-    });
-    if (game.players.some(nonLegit)) {
-        res.send({ message: "Wait for other players", game });
+router.get('/allMixes', async (req, res) => {
+    try {
+        const { code } = req.headers;
+        // Finding the mix 
+        game = await Game.findOne({
+            code
+        })
+        res.send({ game });
+    } catch (err) {
+        res.status(422).send({ err: "Erreur !" })
     }
-    res.send({ message: "Ready", game });
+});
+
+router.get('/players', async (req, res) => {
+    try {
+        const { code } = req.headers;
+        // Finding the mix 
+        game = await Game.findOne({
+            code
+        })
+        res.send({ players: game.players });
+    } catch (err) {
+        res.status(422).send({ err: "Erreur !" })
+    }
+});
+
+router.get('/arePlayersDone', async (req, res) => {
+    try {
+        const { code } = req.headers;
+        game = await Game.findOne({
+            code
+        })
+        if (game.players.some(nonLegit) || !game.launched) {
+            res.send({ allPlayersDone: false });
+        }
+        else {
+            res.send({ allPlayersDone: true });
+        }
+    } catch (err) {
+        res.status(422).send({ err: "Erreur !" })
+    }
 });
 
 router.post('/sendMix', async (req, res) => {
     const { code, name } = req.headers;
-    const { water, wind, sun, gas, nuclear } = req.body;
+    const { mix: { water, wind, sun, gas, nuclear } } = req.body;
 
     if (typeof (water) == undefined || typeof (wind) == undefined || typeof (sun) == undefined || typeof (gas) == undefined || typeof (nuclear) == undefined) {
         return res
@@ -35,7 +66,7 @@ router.post('/sendMix', async (req, res) => {
         code
     }).then(game => {
         players = game.players;
-        players[ind].mix = req.body;
+        players[ind].mix = { water, wind, sun, gas, nuclear };
     });
 
     await Game.findOneAndUpdate(
@@ -47,7 +78,7 @@ router.post('/sendMix', async (req, res) => {
         },
         (err, doc) => {
             if (err) {
-                res.send({ err: "Erreur pendant l'envoi du mix" })
+                return res.send({ err: "Erreur pendant l'envoi du mix" })
             }
         }
     );
@@ -56,6 +87,7 @@ router.post('/sendMix', async (req, res) => {
 
 
 const nonLegit = ({ mix }) => {
+    console.log(mix);
     const { water, wind, sun, gas, nuclear } = mix;
     if (!water && !wind && !sun && !gas && !nuclear) {
         return true

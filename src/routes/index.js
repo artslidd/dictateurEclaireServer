@@ -15,6 +15,7 @@ const mongoUri = 'mongodb+srv://OranoAdmin:oRgspywY8Og76kgf@cluster0-kqsyr.mongo
 mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useCreateIndex: true,
+    useUnifiedTopology: true,
 });
 
 mongoose.connection.on('connected', () => {
