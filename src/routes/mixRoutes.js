@@ -87,7 +87,6 @@ router.post('/sendMix', async (req, res) => {
 
 
 const nonLegit = ({ mix }) => {
-    console.log(mix);
     const { water, wind, sun, gas, nuclear } = mix;
     if (!water && !wind && !sun && !gas && !nuclear) {
         return true

@@ -39,7 +39,7 @@ router.post('/join', async (req, res) => {
         const name = `Joueur ${n + 1}`
         game.players.push({ name, mix: { water: 0, wind: 0, sun: 0, gas: 0, nuclear: 0 } });
         await game.save();
-        res.send({ code, name, launched: game.launched, players: game.players, });
+        res.send({ code, name, launched: game.launched, players: game.players });
     } catch (err) {
         return res.status(422).send({ error: err.message })
     }
